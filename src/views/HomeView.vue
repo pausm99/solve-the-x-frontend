@@ -1,4 +1,5 @@
 <template>
+  <h1 class="text-center text-5xl mb-8">CRUD Football players</h1>
   <form @submit.prevent="addPlayer" novalidate>
     <table class="min-w-full divide-y divide-gray-200">
       <thead>
