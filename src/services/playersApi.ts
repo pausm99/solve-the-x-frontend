@@ -34,3 +34,24 @@ export async function deletePlayerById(id: number) {
       return false;
     }
 }
+
+export async function createPlayer(player: Player): Promise<Player | null> {
+  try {
+      const response = await fetch(`${apiUrlPlayers}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(player)
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to create player');
+      }
+
+      return await response.json();
+  } catch (error) {
+      console.error('Error creating player', error);
+      return null;
+  }
+}
