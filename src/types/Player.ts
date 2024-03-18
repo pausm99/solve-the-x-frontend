@@ -5,5 +5,6 @@ export interface Player {
     position: string;
     height: number;
     weight: number;
+    editing?: boolean;
 }
   
