@@ -5,6 +5,7 @@
       </div>
       <ul class="navbar-links flex gap-10">
         <li><router-link to="/register">Register</router-link></li>
+        <li><router-link to="/login">Login</router-link></li>
         <li><router-link to="/">Home</router-link></li>
       </ul>
     </nav>
