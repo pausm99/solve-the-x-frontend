@@ -55,3 +55,22 @@ export async function createPlayer(player: Player): Promise<Player | null> {
       return null;
   }
 }
+
+export async function updatePlayerById(id: number, updatedPlayerData: any) {
+  try {
+    const response = await fetch(`${apiUrlPlayers}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedPlayerData),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update player');
+    }
+    return await response.json();
+  } catch (error) {
+    throw new Error('Error updating player');
+  }
+}
+
