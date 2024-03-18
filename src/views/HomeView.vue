@@ -13,16 +13,36 @@
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr v-for="player in players" :key="player.id">
-          <td class="px-6 py-4 whitespace-nowrap">{{ player.name }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ player.age }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ player.position }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ player.height }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ player.weight }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <button type="button" @click="deletePlayer(player.id!)" class="bg-red-700 w-full">DELETE</button>
+          <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.name }}</td>
+          <td v-else>
+            <input v-model="playerData.name" type="text" minlength="1" maxlength="40" placeholder="Name" class="input-field" required>
+          </td>
+          <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.age }}</td>
+          <td v-else>
+            <input v-model.number="playerData.age" type="number" min="1" max="100" placeholder="Age" class="input-field" required>
+          </td>
+          <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.position }}</td>
+          <td v-else>
+            <input v-model="playerData.position" type="text" placeholder="Position" class="input-field" required>
+          </td>
+          <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.height }}</td>
+          <td v-else>
+            <input v-model.number="playerData.height" type="number" min="100" max="300" placeholder="Height (cm)" class="input-field" required>
+          </td>
+          <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.weight }}</td>
+          <td v-else>
+            <input v-model.number="playerData.weight" type="number" min="20" max="200" placeholder="Weight (kg)" class="input-field" required>
+          </td>
+          <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">
+            <button type="button" @click="deletePlayer(player.id!)" class="bg-red-700">DELETE</button>
+            <button v-if="!playerEditing()" type="button" @click="startEditing(player.id!)" class="bg-yellow-500">EDIT</button>
+          </td>
+          <td v-else class="px-6 py-4 whitespace-nowrap">
+            <button  type="button" @click="updatePlayer(player.id!)" class="bg-yellow-500">UPDATE</button>
+            <button type="button" @click="cancelEditing(player.id!)" class="bg-blue-100">CANCEL</button>
           </td>
         </tr>
-        <tr>
+        <tr v-if="!playerEditing()">
           <td class="px-6 py-4 whitespace-nowrap">
             <input v-model="playerData.name" type="text" minlength="1" maxlength="40" placeholder="Name" class="input-field" required>
           </td>
@@ -39,7 +59,7 @@
             <input v-model.number="playerData.weight" type="number" min="20" max="200" placeholder="Weight (kg)" class="input-field" required>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <button type="submit" class="bg-green-500 w-full">ADD</button>
+            <button type="submit" class="bg-green-500">ADD</button>
           </td>
         </tr>
       </tbody>
@@ -53,17 +73,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, watch } from 'vue';
+import { defineComponent, reactive, onMounted } from 'vue';
 import { required, minValue, maxValue, minLength, maxLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import { Player } from '../types/Player';
-import { createPlayer, deletePlayerById, getPlayers } from '../services/playersApi';
+import { createPlayer, deletePlayerById, getPlayers, updatePlayerById } from '../services/playersApi';
 
 export default defineComponent({
   setup() {
     // Reactive data
     const players = reactive<Player[]>([]);
-    const playerData = reactive<Player>({
+    let playerData = reactive<Player>({
       name: '',
       age: NaN,
       position: '',
@@ -117,6 +137,66 @@ export default defineComponent({
       }
     }
 
+    // Update player
+    async function updatePlayer(id: number) {
+      try {
+        const updatedPlayer: Player = await updatePlayerById(id, playerData);
+
+        clearForm();
+        
+        const index = players.findIndex(player => player.id === id);
+        if (index !== -1) {
+          players[index] = updatedPlayer;
+        }
+      } catch (error) {
+        console.error('Error updating player:', error);
+      }
+    }
+
+    function playerEditing(): boolean {
+      return players.some(player => player.editing);
+    }
+
+    function startEditing(id: number) {
+      const player = findPlayerById(id);
+      if (player) {
+        player.editing = true;
+        updatePlayerData(player);
+      }
+    }
+
+    function cancelEditing(id: number) {
+      const player = findPlayerById(id);
+      if (player) {
+        player.editing = false;
+        resetPlayerData();
+      }
+    }
+
+    function findPlayerById(id: number): Player | undefined {
+      return players.find(player => player.id === id);
+    }
+
+    function updatePlayerData(player: Player) {
+      playerData.name = player.name;
+      playerData.age = player.age;
+      playerData.position = player.position;
+      playerData.height = player.height;
+      playerData.weight = player.weight;
+    }
+
+    function resetPlayerData() {
+      const emptyPlayer: Player = {
+        name: '',
+        age: NaN,
+        position: '',
+        height: NaN,
+        weight: NaN
+      };
+      Object.assign(playerData, emptyPlayer);
+    }
+
+
     // Clear form data and reset validation state
     function clearForm() {
       Object.assign(playerData, {
@@ -141,7 +221,7 @@ export default defineComponent({
     // Vuelidate instance
     const v$ = useVuelidate(rules, playerData);
 
-    return { players, deletePlayer, addPlayer, playerData, v$ };
+    return { players, deletePlayer, addPlayer, playerData, updatePlayer, startEditing, playerEditing, cancelEditing, v$ };
   }
 });
 
