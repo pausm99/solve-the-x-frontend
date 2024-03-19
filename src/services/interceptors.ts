@@ -1,11 +1,16 @@
 import AuthService from './authService';
-
+import router from '../router';
 
 export function configureResponseInterceptor() {
   const originalFetch = window.fetch;
 
   window.fetch = async function (url, options = {}) {
     const response = await originalFetch(url, options);
+
+    if (response.status === 403) {
+      AuthService.removeToken();
+      router.push('/login');
+    }
 
     const authorizationHeader = response.headers.get('Authorization');
 
