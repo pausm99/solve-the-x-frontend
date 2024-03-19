@@ -1,6 +1,7 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import RegisterView from "../views/RegisterView.vue";
+import StatsView from "../views/StatsView.vue";
 import AuthService from '../services/authService';
 
 const routes: RouteRecordRaw[] = [
@@ -8,7 +9,13 @@ const routes: RouteRecordRaw[] = [
         path: '/',
         name: 'Home',
         component: HomeView,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/statistics',
+        name: 'Statistics',
+        component: StatsView,
+        meta: { requiresAuth: true },
     },
     {
         path: '/register',
