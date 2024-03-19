@@ -15,52 +15,52 @@
       <tbody class="bg-white divide-y divide-gray-200">
         <tr v-for="player in players" :key="player.id">
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.name }}</td>
-          <td v-else>
-            <input v-model="playerData.name" type="text" minlength="1" maxlength="40" placeholder="Name" class="input-field" required>
+          <td v-else class="px-6 py-4 whitespace-nowrap">
+            <input v-model="playerData.name" type="text" minlength="1" maxlength="40" placeholder="Name" class="ps-2 w-full" required>
           </td>
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.age }}</td>
-          <td v-else>
-            <input v-model.number="playerData.age" type="number" min="1" max="100" placeholder="Age" class="input-field" required>
+          <td v-else class="px-6 py-4 whitespace-nowrap">
+            <input v-model.number="playerData.age" type="number" min="1" max="100" placeholder="Age" class="ps-2 w-full" required>
           </td>
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.position }}</td>
-          <td v-else>
-            <input v-model="playerData.position" type="text" placeholder="Position" class="input-field" required>
+          <td v-else class="px-6 py-4 whitespace-nowrap">
+            <input v-model="playerData.position" type="text" placeholder="Position" class="ps-2 w-full" required>
           </td>
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.height }}</td>
-          <td v-else>
-            <input v-model.number="playerData.height" type="number" min="100" max="300" placeholder="Height (cm)" class="input-field" required>
+          <td v-else class="px-6 py-4 whitespace-nowrap">
+            <input v-model.number="playerData.height" type="number" min="100" max="300" placeholder="Height (cm)" class="ps-2 w-full" required>
           </td>
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.weight }}</td>
-          <td v-else>
-            <input v-model.number="playerData.weight" type="number" min="20" max="200" placeholder="Weight (kg)" class="input-field" required>
+          <td v-else class="px-6 py-4 whitespace-nowrap">
+            <input v-model.number="playerData.weight" type="number" min="20" max="200" placeholder="Weight (kg)" class="ps-2 w-full" required>
           </td>
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">
-            <button type="button" @click="deletePlayer(player.id!)" class="bg-red-700">DELETE</button>
-            <button v-if="!playerEditing()" type="button" @click="startEditing(player.id!)" class="bg-yellow-500">EDIT</button>
+            <button type="button" @click="deletePlayer(player.id!)" class="bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-full">DELETE</button>
+            <button v-if="!playerEditing()" type="button" @click="startEditing(player.id!)" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full">EDIT</button>
           </td>
           <td v-else class="px-6 py-4 whitespace-nowrap">
-            <button  type="button" @click="updatePlayer(player.id!)" class="bg-yellow-500">UPDATE</button>
-            <button type="button" @click="cancelEditing(player.id!)" class="bg-blue-100">CANCEL</button>
+            <button  type="button" @click="updatePlayer(player.id!)" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full">UPDATE</button>
+            <button type="button" @click="cancelEditing(player.id!)" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full">CANCEL</button>
           </td>
         </tr>
         <tr v-if="!playerEditing()">
           <td class="px-6 py-4 whitespace-nowrap">
-            <input v-model="playerData.name" type="text" minlength="1" maxlength="40" placeholder="Name" class="input-field" required>
+            <input v-model="playerData.name" type="text" minlength="1" maxlength="40" placeholder="Name" class="ps-2 w-full" required>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <input v-model.number="playerData.age" type="number" min="1" max="100" placeholder="Age" class="input-field" required>
+            <input v-model.number="playerData.age" type="number" min="1" max="100" placeholder="Age" class="ps-2 w-full" required>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <input v-model="playerData.position" type="text" placeholder="Position" class="input-field" required>
+            <input v-model="playerData.position" type="text" placeholder="Position" class="ps-2 w-full" required>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <input v-model.number="playerData.height" type="number" min="100" max="300" placeholder="Height (cm)" class="input-field" required>
+            <input v-model.number="playerData.height" type="number" min="100" max="300" placeholder="Height (cm)" class="ps-2 w-full" required>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <input v-model.number="playerData.weight" type="number" min="20" max="200" placeholder="Weight (kg)" class="input-field" required>
+            <input :class="{ 'outline-red-500': v$.weight.$error }" v-model.number="playerData.weight" type="number" min="20" max="200" placeholder="Weight (kg)" class="ps-2 w-full" required>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <button type="submit" class="bg-green-500">ADD</button>
+            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full">ADD</button>
           </td>
         </tr>
       </tbody>
@@ -86,10 +86,10 @@ export default defineComponent({
     const players = reactive<Player[]>([]);
     let playerData = reactive<Player>({
       name: '',
-      age: NaN,
+      age: 0,
       position: '',
-      height: NaN,
-      weight: NaN,
+      height: 0,
+      weight: 0,
     });
 
     // Fetch players on component mount
@@ -189,10 +189,10 @@ export default defineComponent({
     function resetPlayerData() {
       const emptyPlayer: Player = {
         name: '',
-        age: NaN,
+        age: 0,
         position: '',
-        height: NaN,
-        weight: NaN
+        height: 0,
+        weight: 0
       };
       Object.assign(playerData, emptyPlayer);
     }
@@ -202,10 +202,10 @@ export default defineComponent({
     function clearForm() {
       Object.assign(playerData, {
         name: '',
-        age: NaN,
+        age: 0,
         position: '',
-        height: NaN,
-        weight: NaN,
+        height: 0,
+        weight: 0,
       });
       v$.value.$reset();
     }
@@ -227,3 +227,28 @@ export default defineComponent({
 });
 
 </script>
+
+<style scoped>
+    input {
+      outline: 1px solid rgba(87, 87, 207, 0.885);
+      border-radius: 5px;
+    }
+
+    tr {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    th, td {
+      flex: 1;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f3f3f3;
+    }
+
+    tbody tr td:last-of-type {
+      display: flex;
+      gap: 1rem;
+    }
+</style>
