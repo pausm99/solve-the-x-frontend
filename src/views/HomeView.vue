@@ -1,5 +1,10 @@
 <template>
   <h1 class="text-center text-5xl mb-8">CRUD Football players</h1>
+  <div class="flex justify-center">
+    <router-link to="/statistics" class="mb-4 w-fit bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+      SHOW STATS
+    </router-link>
+  </div>
   <form @submit.prevent="addPlayer" novalidate>
     <table class="min-w-full divide-y divide-gray-200">
       <thead>
