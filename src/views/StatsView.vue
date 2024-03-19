@@ -1,5 +1,10 @@
 <template>
     <h1 class="text-center text-5xl mb-8">Players Statistics</h1>
+    <div class="flex justify-center">
+      <router-link to="/" class="mb-4 w-fit bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+        RETURN HOME
+      </router-link>
+    </div>
     <div class="bg-gray-100 p-20 flex items-center justify-center">
       <div class="p-6 max-w-lg bg-white shadow-md rounded-md">
         <div v-if="loading" class="text-center">
