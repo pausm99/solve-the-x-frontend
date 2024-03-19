@@ -11,7 +11,7 @@
         <tr class="bg-gray-50">
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Postion</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Height (cm)</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (kg)</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -29,7 +29,12 @@
           </td>
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.position }}</td>
           <td v-else class="px-6 py-4 whitespace-nowrap">
-            <input v-model="playerData.position" type="text" placeholder="Position" class="ps-2 w-full" required>
+              <select v-model="playerData.position" class="ps-2 w-full" required>
+                  <option value="Goalkeeper">Goalkeeper</option>
+                  <option value="Defender">Defender</option>
+                  <option value="Midfielder">Midfielder</option>
+                  <option value="Forward">Forward</option>
+              </select>
           </td>
           <td v-if="!player.editing" class="px-6 py-4 whitespace-nowrap">{{ player.height }}</td>
           <td v-else class="px-6 py-4 whitespace-nowrap">
@@ -56,7 +61,14 @@
             <input v-model.number="playerData.age" type="number" min="1" max="100" placeholder="Age" class="ps-2 w-full" required>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <input v-model="playerData.position" type="text" placeholder="Position" class="ps-2 w-full" required>
+              <select v-model="playerData.position" class="ps-2 w-full" required>
+                <option value="" disabled>Position</option>
+                <hr />
+                <option value="Goalkeeper">Goalkeeper</option>
+                <option value="Defender">Defender</option>
+                <option value="Midfielder">Midfielder</option>
+                <option value="Forward">Forward</option>
+              </select>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
             <input v-model.number="playerData.height" type="number" min="100" max="300" placeholder="Height (cm)" class="ps-2 w-full" required>
@@ -91,10 +103,10 @@ export default defineComponent({
     const players = reactive<Player[]>([]);
     let playerData = reactive<Player>({
       name: '',
-      age: 0,
+      age: NaN,
       position: '',
-      height: 0,
-      weight: 0,
+      height: NaN,
+      weight: NaN,
     });
 
     // Fetch players on component mount
@@ -194,10 +206,10 @@ export default defineComponent({
     function resetPlayerData() {
       const emptyPlayer: Player = {
         name: '',
-        age: 0,
+        age: NaN,
         position: '',
-        height: 0,
-        weight: 0
+        height: NaN,
+        weight: NaN
       };
       Object.assign(playerData, emptyPlayer);
     }
@@ -234,7 +246,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-    input {
+    input, select {
       outline: 1px solid rgba(87, 87, 207, 0.885);
       border-radius: 5px;
     }
