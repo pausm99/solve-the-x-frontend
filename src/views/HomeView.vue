@@ -5,7 +5,10 @@
       SHOW STATS
     </router-link>
   </div>
-  <form @submit.prevent="addPlayer" novalidate>
+  <div v-if="errorLoading" class="bg-gray-100 p-20 flex items-center justify-center text-center">
+      <p class="p-6 max-w-lg bg-white shadow-md rounded-md">No data</p>
+  </div>
+  <form v-else @submit.prevent="addPlayer" novalidate>
     <table class="min-w-full divide-y divide-gray-200">
       <thead>
         <tr class="bg-gray-50">
@@ -91,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from 'vue';
+import { defineComponent, reactive, onMounted, ref } from 'vue';
 import { required, minValue, maxValue, minLength, maxLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import { Player } from '../types/Player';
@@ -108,6 +111,7 @@ export default defineComponent({
       height: NaN,
       weight: NaN,
     });
+    const errorLoading = ref(false);
 
     // Fetch players on component mount
     onMounted(fetchPlayers);
@@ -118,6 +122,7 @@ export default defineComponent({
         const fetchedPlayers = await getPlayers();
         players.push(...fetchedPlayers);
       } catch (error) {
+        errorLoading.value = true;
         console.error('Error fetching players', error);
       }
     }
@@ -239,7 +244,7 @@ export default defineComponent({
     // Vuelidate instance
     const v$ = useVuelidate(rules, playerData);
 
-    return { players, deletePlayer, addPlayer, playerData, updatePlayer, startEditing, playerEditing, cancelEditing, v$ };
+    return { players, deletePlayer, addPlayer, playerData, updatePlayer, startEditing, playerEditing, cancelEditing, v$, errorLoading };
   }
 });
 

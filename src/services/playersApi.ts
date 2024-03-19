@@ -14,8 +14,7 @@ export async function getPlayers(): Promise<Player[] | []> {
 
     return await response.json();
   } catch (error) {
-      console.error('Error obtaining players', error);
-      return [];
+      throw new Error('Error obtaining players');
   }
 }
 
