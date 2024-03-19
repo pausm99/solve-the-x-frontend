@@ -10,7 +10,11 @@ export default {
   
     isLoggedIn(): boolean {
       return this.getToken() !== null;
-    }    
+    },
+    
+    removeToken(): void {
+      localStorage.removeItem('token');
+    }
   
   };
   
